@@ -1,17 +1,16 @@
 <?php
     include "config/config.php";
 
-    if (isset($_POST['fname']) && isset($_POST['password']) && isset($_POST['phone']) && isset($_POST['email']) && isset($_POST['lname']) && isset($_POST['minServiceFee']) && isset($_POST['imageData']) && isset($_POST['imageName']) && isset($_POST['pin']))
+    if (isset($_POST['fname']) && isset($_POST['password']) && isset($_POST['phone']) && isset($_POST['email']) && isset($_POST['lname']) && isset($_POST['minServiceFee']) && isset($_POST['imageData']) && isset($_POST['imageName']))
     {
         $fname = $_POST['fname'];
         $lname = $_POST['lname'];
         $phone = $_POST['phone'];
-        $pin = $_POST['pin'];
         $minServiceFee = $_POST['minServiceFee'];
 		$imageName = $_POST['imageName'];
 		$imageData = $_POST['imageData'];
 		$imagePath = "mechanicDps/$imageName.png";
-		$serverUrl = $skopoWebsite."/$imagePath";
+		$serverUrl = $pmWebsite."/$imagePath";
         $passwd = hash('whirlpool',$_POST['password']);
         $email = $_POST['email'];
         $findUserQuery = "SELECT * FROM `mechanic` WHERE `email` = ? ";
@@ -22,14 +21,17 @@
             echo "Username already exists";
         }
         else{
-            if ($pin != "4321")
-            {
-                echo "wrongPin";
+            if (isset($_POST['pin'])){    
+                $pin = $_POST['pin'];
+                if ($pin != "4321")
+                {
+                    echo "wrongPin";
+                }
             }
             else{
-                $addUserQuery = "INSERT INTO `mechanic`(`fname`, `lname`, `phone`, `password`, `email`, `image_path`, `min_fee`) VALUES(?, ?, ?, ?, ?, ?, ?)";
+                $addUserQuery = "INSERT INTO `mechanic`(`fname`, `lname`, `phone`, `password`, `email`, `image_path`, `min_fee`, `status`) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
                 $addUserResult = $conn->prepare($addUserQuery);
-                $addUserResult->execute([$fname, $lname, $phone, $passwd, $email, $serverUrl, $minServiceFee]);
+                $addUserResult->execute([$fname, $lname, $phone, $passwd, $email, $serverUrl, $minServiceFee, 'inactive']);
                 if ($addUserResult)
                 {
                     file_put_contents($imagePath, base64_decode($imageData));

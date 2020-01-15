@@ -11,7 +11,7 @@
 		$imageName = $_POST['imageName'];
 		$imageData = $_POST['imageData'];
 		$imagePath = "userDps/$imageName.png";
-		$serverUrl = $skopoWebsite."/$imagePath";
+		$serverUrl = $pmWebsite."/$imagePath";
         $findUserQuery = "SELECT * FROM `user` WHERE `email` = ? ";
         $findUserResult = $conn->prepare($findUserQuery);
         $findUserResult->execute([$email]);

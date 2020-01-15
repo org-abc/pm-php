@@ -12,7 +12,7 @@
             $imageName = $_POST['imageName'];
             $imageData = $_POST['imageData'];
             $imagePath = "userDps/$imageName.png";
-            $serverUrl = $skopoWebsite."/$imagePath";
+            $serverUrl = $pmWebsite."/$imagePath";
 
             $updateUserQ = "UPDATE `user` SET `fname` = ?, `lname` = ?, `phone` = ?, `image_path` = ? WHERE `email` = ?";
             $updateUserR = $conn->prepare($updateUserQ);
