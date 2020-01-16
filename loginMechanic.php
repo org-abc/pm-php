@@ -10,7 +10,7 @@
 		$findUserResult->execute([$email, $passwd]);
 		if ($findUserResult->rowCount() && $user = $findUserResult->fetch())
 		{
-			echo "congrats";
+			echo $user['status'];
 		}
 		else
 		{

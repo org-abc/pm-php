@@ -6,7 +6,7 @@
 		
 		$act = $_POST['activity'];
 		$email = $_POST['email'];
-		$status = ($act == "activate") ? "active" : "not active";
+		$status = ($act == "activate") ? "active" : "inactive";
 		
 		$updateMechanicStatusQuery = "UPDATE `mechanic` SET `status` = '$status' WHERE `email` = '$email'";
 		
