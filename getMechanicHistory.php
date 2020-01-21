@@ -23,7 +23,7 @@
 			$users[] = $getUserDetailsResult->fetch();
 			$request = $getRequestResult->fetch();
 		}
-		echo Json_encode(array('users'=>$users, 'requests'=>$requests);
+		echo Json_encode(array('users'=>$users, 'requests'=>$requests));
 	
 	}else{
 		echo "Ooooooooops, Something went wrong";
