@@ -1,6 +1,7 @@
 <?php
 
 	include_once("config/config.php");
+	include_once("distanceCalc.php");
 	
 	if(isset($_POST['comment']) && isset($_POST['issue']) && isset($_POST['makeAndModel']) && isset($_POST['email']) && isset($_POST['userLat']) && isset($_POST['userLng']) && isset($_POST['payment']) && isset($_POST['serviceFee'])){
 
@@ -13,31 +14,57 @@
 		$serviceFee = $_POST['serviceFee'];
 		$makeAndModel = $_POST['makeAndModel'];
 
-        $insertReqQuery = "INSERT INTO `request`(`comment`, `user_email`, `status`, `user_lat`, `user_lng`, `min_service_fee`, `issue`, `make_and_model`) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
-        $insertReqResult = $conn->prepare($insertReqQuery);
-        $insertReqResult->execute([$comment, $email, "waiting", $userLat, $userLng, $serviceFee, $issue, $makeAndModel]);
-        $conn->query("COMMIT");
-        $getReqIdResult = $conn->prepare("SELECT `id` FROM `request` WHERE `min_service_fee` = ? AND `user_email` = ? AND `status`= ? ORDER BY `date_created` DESC");
-		$getReqIdResult->execute([$serviceFee, $email, 'waiting']);
-		$row = $getReqIdResult->fetch();
-		echo "congrats:".$row['id'];
+		if (checkIfIsInArea($conn, $userLat, $userLng)){
+			$insertReqQuery = "INSERT INTO `request`(`comment`, `user_email`, `status`, `user_lat`, `user_lng`, `min_service_fee`, `issue`, `make_and_model`) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+			$insertReqResult = $conn->prepare($insertReqQuery);
+			$insertReqResult->execute([$comment, $email, "waiting", $userLat, $userLng, $serviceFee, $issue, $makeAndModel]);
+			$conn->query("COMMIT");
+			$getReqIdResult = $conn->prepare("SELECT `id` FROM `request` WHERE `min_service_fee` = ? AND `user_email` = ? AND `status`= ? ORDER BY `date_created` DESC");
+			$getReqIdResult->execute([$serviceFee, $email, 'waiting']);
+			$row = $getReqIdResult->fetch();
+			echo "congrats:".$row['id'];
+			
+			if (isset($_POST['imageData']) && isset($_POST['imageName'])){
+
+				$imageName = $_POST['imageName'];
+				$imageData = $_POST['imageData'];
+				$imagePath = "reqPics/$imageName.png";
+				$serverUrl = $pmWebsite."/$imagePath";
+
+				$addImageQ = "UPDATE `request` SET `img_path` = ? WHERE `id` = ?";
+				$addImageR = $conn->prepare($addImageQ);
+				$addImageR->execute([$serverUrl, $row['id']]);
 		
-		if (isset($_POST['imageData']) && isset($_POST['imageName'])){
-
-			$imageName = $_POST['imageName'];
-			$imageData = $_POST['imageData'];
-			$imagePath = "reqPics/$imageName.png";
-			$serverUrl = $pmWebsite."/$imagePath";
-
-			$addImageQ = "UPDATE `request` SET `img_path` = ? WHERE `id` = ?";
-			$addImageR = $conn->prepare($addImageQ);
-			$addImageR->execute([$serverUrl, $row['id']]);
-	
-			file_put_contents($imagePath, base64_decode($imageData));
+				file_put_contents($imagePath, base64_decode($imageData));
+			}
+		}else{
+			echo "outOfRange";
 		}
 	
 	}else{
 		echo "Ooooooooops, Something went wrong";
+	}
+
+	function checkIfIsInArea($conn, $lat, $lng){
+		
+		$checkAreaQ = "SELECT `lat`, `lng`, `email` FROM `mechanic` WHERE `status` = ?";
+		$checkAreaR = $conn->prepare($checkAreaQ);
+		$checkAreaR->execute(['active']);
+
+		while ($mechanic = $checkAreaR->fetch()){
+			
+			$distance = distance($lat, $lng, $mechanic['lat'], $mechanic['lng'], "k");
+			if ($distance <= 20){
+
+				$checkIfAvailableQ = "SELECT `status` FROM `request` WHERE mechanic_email = ? AND `status` = ?";
+				$checkIfAvailableR = $conn->prepare($checkIfAvailableQ);
+				$checkIfAvailableR->execute([$mechanic['email'], "accept"]);
+				if (!$checkIfAvailableR->fetch()){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 ?>

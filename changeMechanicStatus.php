@@ -8,11 +8,15 @@
 		$email = $_POST['email'];
 		$status = ($act == "activate") ? "active" : "inactive";
 		
-		$updateMechanicStatusQuery = "UPDATE `mechanic` SET `status` = '$status' WHERE `email` = '$email'";
+		$updateMechanicStatusQ = "UPDATE `mechanic` SET `status` = ? WHERE `email` = ?";
+		$updateMechanicStatusR = $conn->prepare($updateMechanicStatusQ);
 		
-		$conn->query($updateMechanicStatusQuery);
-		
-		echo "congrats";
+		if ($updateMechanicStatusR->execute([$status, $email])){
+			echo "congrats";
+		}
+		else{
+			echo "sorry";
+		}
 	
 	}else{
 		echo "Ooooooooops, Something went wrong";

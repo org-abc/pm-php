@@ -12,11 +12,11 @@
             $unit = strtoupper($unit);
 
             if ($unit == "K") {
-            return ($miles * 1.609344);
+                return ($miles * 1.609344);
             } else if ($unit == "N") {
-            return ($miles * 0.8684);
+                return ($miles * 0.8684);
             } else {
-            return $miles;
+                return $miles;
             }
         }
     }

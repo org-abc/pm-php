@@ -1,16 +1,23 @@
 <?php
     include "config/config.php";
 
-    if (isset($_POST['fname']) && isset($_POST['password']) && isset($_POST['phone']) && isset($_POST['email']) && isset($_POST['lname']) && isset($_POST['minServiceFee']) && isset($_POST['imageData']) && isset($_POST['imageName']))
+    if (isset($_POST['fname']) && isset($_POST['password']) && isset($_POST['phone']) && isset($_POST['email']) && isset($_POST['lname']) && isset($_POST['minServiceFee']) && isset($_POST['imageData']) && isset($_POST['imageName']) && isset($_POST['IdImageData']) && isset($_POST['IdImageName']))
     {
         $fname = $_POST['fname'];
         $lname = $_POST['lname'];
         $phone = $_POST['phone'];
         $minServiceFee = $_POST['minServiceFee'];
+
 		$imageName = $_POST['imageName'];
 		$imageData = $_POST['imageData'];
 		$imagePath = "mechanicDps/$imageName.png";
-		$serverUrl = $pmWebsite."/$imagePath";
+        $serverUrl = $pmWebsite."/$imagePath";
+        
+		$IdImageName = $_POST['IdImageName'];
+		$IdImageData = $_POST['IdImageData'];
+		$IdImagePath = "mechanicIDs/$IdImageName.png";
+        $IdServerUrl = $pmWebsite."/$IdImagePath";
+        
         $passwd = hash('whirlpool',$_POST['password']);
         $email = $_POST['email'];
         $findUserQuery = "SELECT * FROM `mechanic` WHERE `email` = ? ";
@@ -29,12 +36,13 @@
                 }
             }
             else{
-                $addUserQuery = "INSERT INTO `mechanic`(`fname`, `lname`, `phone`, `password`, `email`, `image_path`, `min_fee`, `status`) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+                $addUserQuery = "INSERT INTO `mechanic`(`fname`, `lname`, `phone`, `password`, `email`, `image_path`, `min_fee`, `status`, `id_image_path`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $addUserResult = $conn->prepare($addUserQuery);
-                $addUserResult->execute([$fname, $lname, $phone, $passwd, $email, $serverUrl, $minServiceFee, 'inactive']);
+                $addUserResult->execute([$fname, $lname, $phone, $passwd, $email, $serverUrl, $minServiceFee, 'inactive', $IdServerUrl]);
                 if ($addUserResult)
                 {
                     file_put_contents($imagePath, base64_decode($imageData));
+                    file_put_contents($IdImagePath, base64_decode($IdImageData));
                 }
                 $conn->query("COMMIT");
                 sendEmail($email, "you are now a Mechanic at PM", "Congrats");
