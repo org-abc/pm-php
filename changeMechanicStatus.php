@@ -12,6 +12,7 @@
 		$updateMechanicStatusR = $conn->prepare($updateMechanicStatusQ);
 		
 		if ($updateMechanicStatusR->execute([$status, $email])){
+			$conn->query("COMMIT");
 			echo "congrats";
 		}
 		else{

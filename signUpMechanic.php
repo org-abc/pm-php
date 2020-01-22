@@ -18,6 +18,13 @@
 		$IdImagePath = "mechanicIDs/$IdImageName.png";
         $IdServerUrl = $pmWebsite."/$IdImagePath";
         
+        if (isset($_POST['QualificationImageData']) && isset($_POST['QualificationImageName'])){
+            $QualificationImageName = $_POST['QualificationImageName'];
+            $QualificationImageData = $_POST['QualificationImageData'];
+            $QualificationImagePath = "mechanicQualifications/$QualificationImageName.png";
+            $QualificationServerUrl = $pmWebsite."/$QualificationImagePath";
+        }
+
         $passwd = hash('whirlpool',$_POST['password']);
         $email = $_POST['email'];
         $findUserQuery = "SELECT * FROM `mechanic` WHERE `email` = ? ";
@@ -36,13 +43,24 @@
                 }
             }
             else{
-                $addUserQuery = "INSERT INTO `mechanic`(`fname`, `lname`, `phone`, `password`, `email`, `image_path`, `min_fee`, `status`, `id_image_path`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                $addUserResult = $conn->prepare($addUserQuery);
-                $addUserResult->execute([$fname, $lname, $phone, $passwd, $email, $serverUrl, $minServiceFee, 'inactive', $IdServerUrl]);
+                if (isset($_POST['QualificationImageData']) && isset($_POST['QualificationImageName'])){
+                    $addUserQuery = "INSERT INTO `mechanic`(`fname`, `lname`, `phone`, `password`, `email`, `image_path`, `min_fee`, `status`, `id_image_path`, `qualification_image_path`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $addUserResult = $conn->prepare($addUserQuery);
+                    $addUserResult->execute([$fname, $lname, $phone, $passwd, $email, $serverUrl, $minServiceFee, 'inactive', $IdServerUrl, $QualificationServerUrl]);
+                }
+                else{
+                    $addUserQuery = "INSERT INTO `mechanic`(`fname`, `lname`, `phone`, `password`, `email`, `image_path`, `min_fee`, `status`, `id_image_path`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $addUserResult = $conn->prepare($addUserQuery);
+                    $addUserResult->execute([$fname, $lname, $phone, $passwd, $email, $serverUrl, $minServiceFee, 'inactive', $IdServerUrl]);
+                }
+
                 if ($addUserResult)
                 {
                     file_put_contents($imagePath, base64_decode($imageData));
                     file_put_contents($IdImagePath, base64_decode($IdImageData));
+                    if (isset($_POST['QualificationImageData']) && isset($_POST['QualificationImageName'])){
+                        file_put_contents($QualificationImagePath, base64_decode($QualificationImageData));
+                    }
                 }
                 $conn->query("COMMIT");
                 sendEmail($email, "you are now a Mechanic at PM", "Congrats");
