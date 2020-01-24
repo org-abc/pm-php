@@ -10,8 +10,11 @@
 		
         $getRequestQuery = "SELECT * FROM `request` WHERE `status` != 'waiting'";
         $getRequestResult = $conn->query($getRequestQuery);
-        $request = $getRequestResult->fetch();
+		$request = $getRequestResult->fetch();
 		
+		if (!$request){
+			exit("empty");
+		}
 		while ($request){
 			$requests[] = $request;
 			
