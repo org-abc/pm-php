@@ -66,9 +66,9 @@
 			$distance = distance($lat, $lng, $mechanic['lat'], $mechanic['lng'], "k");
 			if ($distance <= 20){
 
-				$checkIfAvailableQ = "SELECT `status` FROM `request` WHERE mechanic_email = ? AND `status` = ?";
+				$checkIfAvailableQ = "SELECT `status` FROM `request` WHERE mechanic_email = ? AND (`status` = ? OR `status` = ?)";
 				$checkIfAvailableR = $conn->prepare($checkIfAvailableQ);
-				$checkIfAvailableR->execute([$mechanic['email'], "accept"]);
+				$checkIfAvailableR->execute([$mechanic['email'], "accept", "arrived"]);
 				if (!$checkIfAvailableR->fetch()){
 					$isIt = true;
 					if ($mechanic['token'] != 'null' && $mechanic['token'] != 'none'){

@@ -9,14 +9,15 @@
 		
 		$cancelReqQuery = "UPDATE `request` SET `status` = ? WHERE `id` = ? AND `status` != 'arrived'";
 		$cancelReqResult = $conn->prepare($cancelReqQuery);
+		$cancelReqResult->execute([$response, $requestId]);
+		$conn->query("COMMIT");
 		
-		if ($cancelReqResult->execute([$response, $requestId])){
-			$conn->query("COMMIT");
+		if ($cancelReqResult->rowCount()){
 			echo "congrats";
+			alertTheClient($conn, $requestId);
 		}else{
 			echo "sorry";
 		}
-		alertTheClient($conn, $requestId);
 	
 	}else{
 		echo "Ooooooooops, Something went wrong";
