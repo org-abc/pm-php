@@ -26,7 +26,7 @@
 		$getTokenQ = "SELECT `user`.`token` FROM `user` INNER JOIN `request` ON `user`.`email` = `request`.`user_email` AND `request`.`id` = $requestId";
 		$getTokenR = $conn->query($getTokenQ);
 		if ($token = $getTokenR->fetch()){
-			if ($token['token'] != "null" && $token != "none"){
+			if ($token['token'] != "null" && $token['token'] != "none"){
 				sendNotification($token['token'], array("body" => "A Mechanic is comming to the rescure", "title" => "Hoory!"));
 			}
 		}

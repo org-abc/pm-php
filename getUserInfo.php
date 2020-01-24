@@ -11,7 +11,7 @@
 		$findUserResult->execute([$email, $passwd]);
         
 		if ($user = $findUserResult->fetch()){
-			$checkReqsQ = "SELECT * FROM `request` WHERE (`status` = 'accept' OR `status` = 'waiting') AND `user_email` = ?";
+			$checkReqsQ = "SELECT * FROM `request` WHERE (`status` = 'accept' OR `status` = 'waiting' OR `status` = 'arrived') AND `user_email` = ?";
 			$checkReqsR = $conn->prepare($checkReqsQ);
 			$checkReqsR->execute([$email]);
 
@@ -21,8 +21,8 @@
 			else{
 				echo json_encode(array("user"=>$user, "req"=>"empty"));
 			}
-			insertToken($conn, $email, $passwd, $token);
 		}
+		insertToken($conn, $email, $passwd, $token);
 	}
 	else
 	{

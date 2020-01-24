@@ -7,14 +7,14 @@
 		$dateCreated = $_POST['dateCreated'];
 		$mechanicEmail = $_POST['mechanicEmail'];
 		
-		$getRequestQuery = "SELECT * FROM `request` WHERE (`mechanic_email` = ? AND `status` = 'accept')";
+		$getRequestQuery = "SELECT * FROM `request` WHERE `mechanic_email` = ? AND (`status` = 'accept' OR `status` = 'arrived')";
 		$getRequestResult = $conn->prepare($getRequestQuery);
 		$getRequestResult->execute([$mechanicEmail]);
 		
 		if (!($request = $getRequestResult->fetch())){
-			$getRequestQuery = "SELECT * FROM `request` WHERE `status` = 'waiting'";
+			$getRequestQuery = "SELECT * FROM `request` WHERE `status` = 'waiting' AND `date_created` > ? ORDER BY `date_created` ASC";
 			$getRequestResult = $conn->prepare($getRequestQuery);
-			$getRequestResult->execute([]);
+			$getRequestResult->execute([$dateCreated]);
 			$request = $getRequestResult->fetch();
 		}
 		
