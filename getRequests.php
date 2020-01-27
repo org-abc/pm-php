@@ -12,7 +12,7 @@
 		$getRequestResult->execute([$mechanicEmail]);
 		
 		if (!($request = $getRequestResult->fetch())){
-			$getRequestQuery = "SELECT * FROM `request` WHERE `status` = 'waiting' AND `date_created` > ? ORDER BY `date_created` ASC";
+			$getRequestQuery = "SELECT * FROM `request` WHERE `status` = 'waiting' AND `date_created` > ? ORDER BY `date_created` ASC LIMIT 10";
 			$getRequestResult = $conn->prepare($getRequestQuery);
 			$getRequestResult->execute([$dateCreated]);
 			$request = $getRequestResult->fetch();

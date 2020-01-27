@@ -8,8 +8,9 @@
 		$email = $_POST['email'];
 		
 		
-        $getRequestQuery = "SELECT * FROM `request` WHERE `status` != 'waiting'";
-        $getRequestResult = $conn->query($getRequestQuery);
+        $getRequestQuery = "SELECT * FROM `request` WHERE `mechanic_email` = ? AND `date_created` < ? ORDER BY `date_created` DESC LIMIT 10";
+		$getRequestResult = $conn->prepare($getRequestQuery);
+		$getRequestResult->execute([$email, $dateCreated]);
 		$request = $getRequestResult->fetch();
 		
 		if (!$request){
