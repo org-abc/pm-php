@@ -17,7 +17,7 @@
 			echo $response.":";
 		}
 		else{
-			$getMechanicDetailsQuery = "SELECT `lat`, `lng`, `phone`, `image_path`, `email` FROM `mechanic` WHERE `email` = ?";
+			$getMechanicDetailsQuery = "SELECT `lat`, `lng`, `phone`, `image_path`, `email`, `fname`, `lname`, `rating` FROM `mechanic` WHERE `email` = ?";
 			$getMechanicDetailsResult = $conn->prepare($getMechanicDetailsQuery);
 			$getMechanicDetailsResult->execute([$mechanicEmail]);
 			
