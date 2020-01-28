@@ -29,7 +29,7 @@
 		if ($result = $getTokenR->fetch()){
 			if ($result['token'] != "null" && $result['token'] != "none"){
 				$body = ($status == "Arrived" || $status == "arrived") ? "Your Mechanic has arrived at your specified destination" : "The mechanic has set the issue as resolved. Tap to rate his service";
-				sendNotification($result['token'], array("body" => $body, "title" => "Arrived"));
+				sendNotification($result['token'], array("body" => $body, "title" => $status));
 			}
 		}
 	}
