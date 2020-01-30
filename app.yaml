@@ -1,0 +1,13 @@
+runtime: php73
+
+handlers:
+- url: .*
+  script: auto
+
+env_variables:
+  MYSQL_USER: kondie
+  MYSQL_PASSWORD: "pocketMechanic4321"
+  MYSQL_DSN: mysql:dbname=pocket_mechanic;unix_socket=/cloudsql/specials-1523610414581:us-central1:pocket-mechanic
+
+beta_settings:
+  cloud_sql_instances: "specials-1523610414581:us-central1:pocket-mechanic" 

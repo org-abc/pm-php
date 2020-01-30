@@ -1,9 +1,9 @@
 <?php
-    $servername = "localhost";
-    $username = "id11838557_pm";
-    $password = "123456";
-    $dbname = "id11838557_pm";
+    $servername = "35.222.32.203";
+    $username = "kondie";
+    $password = "pocketMechanic4321";
+    $dbname = "pocket_mechanic";
     $charset = "utf8mb4";
-    $dns = "mysql:host=".$servername.";dbname=".$dbname.";charset=".$charset;
-    $pmWebsite = "https://pocketmechanic.000webhostapp.com/";
+    $dns = "mysql:dbname=".$dbname.";unix_socket=/cloudsql/specials-1523610414581:us-central1:pocket-mechanic";
+    $pmWebsite = "https://specials-1523610414581.appspot.com/";
 ?>
