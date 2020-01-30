@@ -4,6 +4,8 @@
 	include_once("distanceCalc.php");
 	include_once("sendPushNotification.php");
 	
+    use google\appengine\api\cloud_storage\CloudStorageTools;
+
 	if(isset($_POST['comment']) && isset($_POST['issue']) && isset($_POST['makeAndModel']) && isset($_POST['email']) && isset($_POST['userLat']) && isset($_POST['userLng']) && isset($_POST['payment']) && isset($_POST['serviceFee'])){
 
 		$comment = $_POST['comment'];
@@ -37,13 +39,13 @@
 					$imageName = $_POST['imageName'];
 					$imageData = $_POST['imageData'];
 					$imagePath = "reqPics/$imageName.png";
-					$serverUrl = $pmWebsite."/$imagePath";
+					$bucket = "gs://".$_SERVER['BUCKET_NAME']."/$imagePath";
+					file_put_contents($bucket, base64_decode($imageData));
+					$serverUrl = CloudStorageTools::getPublicUrl($bucket, true);
 
 					$addImageQ = "UPDATE `request` SET `img_path` = ? WHERE `id` = ?";
 					$addImageR = $conn->prepare($addImageQ);
 					$addImageR->execute([$serverUrl, $row['id']]);
-			
-					file_put_contents($imagePath, base64_decode($imageData));
 				}
 			}else{
 				echo "outOfRange";

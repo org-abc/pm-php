@@ -1,6 +1,8 @@
 <?php
     include "config/config.php";
 
+    use google\appengine\api\cloud_storage\CloudStorageTools;
+
     if (isset($_POST['fname']) && isset($_POST['password']) && isset($_POST['phone']) && isset($_POST['email']) && isset($_POST['lname']) && isset($_POST['imageData']) && isset($_POST['imageName']))
     {
         $fname = $_POST['fname'];
@@ -11,10 +13,14 @@
 		$imageName = $_POST['imageName'];
 		$imageData = $_POST['imageData'];
 		$imagePath = "userDps/$imageName.png";
-		$serverUrl = $pmWebsite."/$imagePath";
+		$bucket = "gs://".$_SERVER['BUCKET_NAME']."/$imagePath";
         $findUserQuery = "SELECT * FROM `user` WHERE `email` = ? ";
         $findUserResult = $conn->prepare($findUserQuery);
         $findUserResult->execute([$email]);
+
+        file_put_contents($bucket, base64_decode($imageData));
+        $serverUrl = CloudStorageTools::getPublicUrl($bucket, true);
+
         if ($findUserResult->rowCount())
         {
             echo "Username already exists";
@@ -31,10 +37,6 @@
                 $addUserResult->execute([$fname, $lname, $phone, $passwd, $email, $code, $serverUrl]);
                 $conn->query("COMMIT");
 
-                if ($addUserResult)
-                {
-                    file_put_contents($imagePath, base64_decode($imageData));
-                }
                 echo "verify";
             }
             else
@@ -42,6 +44,9 @@
                 echo "Password must be at least 6 characters";
             }
         }
+    }
+    else{
+        echo "Oooops";
     }
     
     function sendEmail($to, $msg, $sbj)

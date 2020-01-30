@@ -1,12 +1,97 @@
-runtime: php73
+runtime: php55
+api_version: 1
 
 handlers:
-- url: .*
-  script: auto
+  
+- url: /(.+\.(gif|png|jpg))$
+  static_files: \1
+  upload: .+\.(gif|png|jpg)$
+
+- url: /acceptRequest\.php
+  script: acceptRequest.php
+
+- url: /cancelReq\.php
+  script: cancelReq.php
+
+- url: /changeMechanicPassword\.php
+  script: changeMechanicPassword.php
+
+- url: /changeMechanicStatus\.php
+  script: changeMechanicStatus.php
+
+- url: /changeUserPassword\.php
+  script: changeUserPassword.php
+
+- url: /checkResponse\.php
+  script: checkResponse.php
+
+- url: /getDriverInfo\.php
+  script: getDriverInfo.php
+
+- url: /getHistory\.php
+  script: getHistory.php
+
+- url: /getMechanicHistory\.php
+  script: getMechanicHistory.php
+
+- url: /getMechanics\.php
+  script: getMechanics.php
+
+- url: /getRequests\.php
+  script: getRequests.php
+
+- url: /getUserInfo\.php
+  script: getUserInfo.php
+
+- url: /login\.php
+  script: login.php
+
+- url: /loginMechanic\.php
+  script: loginMechanic.php
+
+- url: /request\.php
+  script: request.php
+
+- url: /sendFeedback\.php
+  script: sendFeedback.php
+
+- url: /sendMechanicCode\.php
+  script: sendMechanicCode.php
+
+- url: /sendPushNotification\.php
+  script: sendPushNotification.php
+
+- url: /sendUserCode\.php
+  script: sendUserCode.php
+
+- url: /setRequestAsResolved\.php
+  script: setRequestAsResolved.php
+
+- url: /signUp\.php
+  script: signUp.php
+
+- url: /signUpMechanic\.php
+  script: signUpMechanic.php
+
+- url: /updateLoc\.php
+  script: updateLoc.php
+
+- url: /updateMechanicLoc\.php
+  script: updateMechanicLoc.php
+
+- url: /updateMechanicProfile\.php
+  script: updateMechanicProfile.php
+
+- url: /updateProfile\.php
+  script: updateProfile.php
+
+- url: /verifyUser\.php
+  script: verifyUser.php
 
 env_variables:
   MYSQL_USER: kondie
   MYSQL_PASSWORD: "pocketMechanic4321"
+  BUCKET_NAME: "pocket_mechanic_bucket"
   MYSQL_DSN: mysql:dbname=pocket_mechanic;unix_socket=/cloudsql/specials-1523610414581:us-central1:pocket-mechanic
 
 beta_settings:

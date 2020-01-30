@@ -1,6 +1,8 @@
 <?php
     include "config/config.php";
 
+    use google\appengine\api\cloud_storage\CloudStorageTools;
+
     if (isset($_POST['fname']) && isset($_POST['password']) && isset($_POST['phone']) && isset($_POST['email']) && isset($_POST['lname']) && isset($_POST['minServiceFee']) && isset($_POST['imageData']) && isset($_POST['imageName']) && isset($_POST['IdImageData']) && isset($_POST['IdImageName']))
     {
         $fname = $_POST['fname'];
@@ -11,18 +13,24 @@
 		$imageName = $_POST['imageName'];
 		$imageData = $_POST['imageData'];
 		$imagePath = "mechanicDps/$imageName.png";
-        $serverUrl = $pmWebsite."/$imagePath";
+		$bucket = "gs://".$_SERVER['BUCKET_NAME']."/$imagePath";
+        file_put_contents($bucket, base64_decode($imageData));
+        $serverUrl = CloudStorageTools::getPublicUrl($bucket, true);
         
 		$IdImageName = $_POST['IdImageName'];
 		$IdImageData = $_POST['IdImageData'];
 		$IdImagePath = "mechanicIDs/$IdImageName.png";
-        $IdServerUrl = $pmWebsite."/$IdImagePath";
+		$IdBucket = "gs://".$_SERVER['BUCKET_NAME']."/$IdImagePath";
+        file_put_contents($IdBucket, base64_decode($IdImageData));
+        $IdServerUrl = CloudStorageTools::getPublicUrl($IdBucket, true);
         
         if (isset($_POST['QualificationImageData']) && isset($_POST['QualificationImageName'])){
             $QualificationImageName = $_POST['QualificationImageName'];
             $QualificationImageData = $_POST['QualificationImageData'];
             $QualificationImagePath = "mechanicQualifications/$QualificationImageName.png";
-            $QualificationServerUrl = $pmWebsite."/$QualificationImagePath";
+            $QualificationBucket = "gs://".$_SERVER['BUCKET_NAME']."/$QualificationImagePath";
+            file_put_contents($QualificationBucket, base64_decode($QualificationImageData));
+            $QualificationServerUrl = CloudStorageTools::getPublicUrl($QualificationBucket, true);
         }
 
         $passwd = hash('whirlpool',$_POST['password']);
@@ -54,14 +62,6 @@
                     $addUserResult->execute([$fname, $lname, $phone, $passwd, $email, $serverUrl, $minServiceFee, 'inactive', $IdServerUrl]);
                 }
 
-                if ($addUserResult)
-                {
-                    file_put_contents($imagePath, base64_decode($imageData));
-                    file_put_contents($IdImagePath, base64_decode($IdImageData));
-                    if (isset($_POST['QualificationImageData']) && isset($_POST['QualificationImageName'])){
-                        file_put_contents($QualificationImagePath, base64_decode($QualificationImageData));
-                    }
-                }
                 $conn->query("COMMIT");
                 sendEmail($email, "you are now a Mechanic at PM", "Congrats");
                 
