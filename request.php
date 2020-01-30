@@ -59,7 +59,7 @@
 	function checkIfIsInArea($conn, $lat, $lng, $issue, $car, $comment){
 		
 		$checkAreaQ = "SELECT `lat`, `lng`, `email`, `token` FROM `mechanic` WHERE `status` = ?";
-		$checkAreaR = $conn->prepare($checkAreaQ);
+		$checkAreaR = $conn->prepare( $checkAreaQ);
 		$checkAreaR->execute(['active']);
 		$isIt = false;
 
