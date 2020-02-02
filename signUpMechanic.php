@@ -64,6 +64,7 @@
 
                 $conn->query("COMMIT");
                 sendEmail($email, "you are now a Mechanic at PM", "Congrats");
+                sendEmail($companyEmail, "A new mechanic signed up. Please go to review him", "Another one");
                 
                 echo "congrats";
             }
