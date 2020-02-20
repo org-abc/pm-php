@@ -6,11 +6,11 @@
 	$obj = new Config();
 	if (!($conn = $obj->connect()))
 	{
-		$createDbQuery = "CREATE DATABASE `$dbname`";
+		// $createDbQuery = "CREATE DATABASE `$dbname`";
 		
 		try {
-			$dbh = new PDO("mysql:host=$servername", $username, $password);
-			$dbh->exec($createDbQuery) or die("something went wrong.");
+			// $dbh = new PDO("mysql:host=$servername", $username, $password);
+			// $dbh->exec($createDbQuery) or die("something went wrong.");
 
 			$conn = $obj->connect();
 			$conn->exec("CREATE TABLE `user`(`fname` varchar(50) not null, `lname` varchar(50) not null, `token` varchar(500), `image_path` varchar(500), `status` varchar(50) not null default 'active', `phone` varchar(20) not null, `password` varchar(255) not null, `email` varchar(50) not null PRIMARY KEY, `code` int NOT NULL, `verified` BOOLEAN NOT NULL DEFAULT false, `lat` double default 0, `lng` double default 0) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin");

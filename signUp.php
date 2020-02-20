@@ -1,5 +1,6 @@
 <?php
-    include "config/config.php";
+    include_once("config/config.php");
+    include_once("methods.php");
 
     use google\appengine\api\cloud_storage\CloudStorageTools;
 
@@ -23,6 +24,7 @@
 
         if ($findUserResult->rowCount())
         {
+            // unlink($serverUrl);
             echo "Username already exists";
         }
         else{
@@ -30,7 +32,7 @@
             {
 				$code = rand(1000, 9000);
                 $url = $_SERVER['HTTP_HOST'] . str_replace("/signUp.php", "", $_SERVER['REQUEST_URI']);
-                sendEmail($email,  "Code: ".$code, "Verification code");
+                sendEmail($email,  "Code: ".$code, "Verification code", $companyEmail);
 
                 $addUserQuery = "INSERT INTO `user`(`fname`, `lname`, `phone`, `password`, `email`, `code`, `image_path`) VALUES(?, ?, ?, ?, ?, ?, ?)";
                 $addUserResult = $conn->prepare($addUserQuery);
@@ -41,21 +43,12 @@
             }
             else
             {
+                // unlink($serverUrl);
                 echo "Password must be at least 6 characters";
             }
         }
     }
     else{
         echo "Oooops";
-    }
-    
-    function sendEmail($to, $msg, $sbj)
-    {
-        ini_set( 'display_errors', 1 );
-        error_reporting( E_ALL );
-        $from = "www.kondie@live.com";
-        $header = "From:" . $from;
-
-        mail($to, $sbj, $msg, $header);
     }
 ?>

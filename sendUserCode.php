@@ -1,5 +1,6 @@
 <?php
 	include_once("config/config.php");
+    include_once("methods.php");
 	
 	if(isset($_POST['email'])){
 	
@@ -13,7 +14,7 @@
             $changeVerifCodeQuery = "UPDATE `user` SET `code` = ? WHERE `email` = ?";
             $changeVerifCodeResult = $conn->prepare($changeVerifCodeQuery);
             if ($changeVerifCodeResult->execute([$code, $email])){
-                sendEmail($email, "Code: ".$code, "Forgot Password");
+                sendEmail($email, "Code: ".$code, "Forgot Password", $companyEmail);
                 echo "congrats";
             }
         }
@@ -23,16 +24,5 @@
 	
 	}else{
 		echo "Ooooooooops, Something went wrong";
-    }
-    
-     
-    function sendEmail($to, $msg, $sbj)
-    {
-        ini_set( 'display_errors', 1 );
-        error_reporting( E_ALL );
-        $from = "www.kondie@live.com";
-        $header = "From:" . $from;
-
-        mail($to, $sbj, $msg, $header);
     }
 ?>

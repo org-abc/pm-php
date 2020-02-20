@@ -2,6 +2,7 @@
 
 	include_once("config/config.php");
 	include_once("./sendPushNotification.php");
+    include_once("methods.php");
 	
 	if(isset($_POST['activity']) && isset($_POST['email'])){
 		
@@ -16,7 +17,7 @@
 			$conn->query("COMMIT");
 			$msg = ($status == "active") ? "Hooray, your account have been activated. You can now get to work" : "Sorry, your account have been deactivated. Contact customer care at $companyPhone or $companyEmail for more information";
 			alertTheClient($conn, $email, $msg);
-			sendEmail($email, $msg, "Account status");
+			sendEmail($email, $msg, "Account status", $companyEmail);
 			echo "congrats";
 		}
 		else{
@@ -38,15 +39,4 @@
 			}
 		}
 	}
-    
-    function sendEmail($to, $msg, $sbj)
-    {
-        ini_set( 'display_errors', 1 );
-        error_reporting( E_ALL );
-        $from = "www.kondie@live.com";
-        $header = "From:" . $from;
-
-        mail($to, $sbj, $msg, $header);
-    }
-
 ?>

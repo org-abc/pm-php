@@ -1,5 +1,6 @@
 <?php
-    include "config/config.php";
+    include_once("config/config.php");
+    include_once("methods.php");
 
     use google\appengine\api\cloud_storage\CloudStorageTools;
 
@@ -40,6 +41,9 @@
         $findUserResult->execute([$email]);
         if ($findUserResult->rowCount())
         {
+            // unlink($serverUrl);
+            // unlink($IdServerUrl);
+            // unlink($QualificationServerUrl);
             echo "Username already exists";
         }
         else{
@@ -47,6 +51,9 @@
                 $pin = $_POST['pin'];
                 if ($pin != "4321")
                 {
+                    // unlink($serverUrl);
+                    // unlink($IdServerUrl);
+                    // unlink($QualificationServerUrl);
                     echo "wrongPin";
                 }
             }
@@ -63,21 +70,11 @@
                 }
 
                 $conn->query("COMMIT");
-                sendEmail($email, "you are now a Mechanic at PM", "Congrats");
-                sendEmail($companyEmail, "A new mechanic signed up. Please go to review him", "Another one");
+                sendEmail($email, "you are now a Mechanic at PM", "Congrats", $companyEmail);
+                sendEmail($companyEmail, "A new mechanic signed up. Please go to review him", "Another one", $companyEmail);
                 
                 echo "congrats";
             }
         }
-    }
-    
-    function sendEmail($to, $msg, $sbj)
-    {
-        ini_set( 'display_errors', 1 );
-        error_reporting( E_ALL );
-        $from = "www.kondie@live.com";
-        $header = "From:" . $from;
-
-        mail($to, $sbj, $msg, $header);
     }
 ?>
